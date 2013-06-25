@@ -1,0 +1,98 @@
+/** 
+***  Tutorial edited 6/21/2013 by xueqian
+**/
+
+User Guide:
+
+------------
+
+ Usage: zimckt('cktname') or cktsim('cktname', tr_type)
+  *cktname: should include the path where the file locates
+  *tr_type: determine transient analysis type:    
+  	- standard      : 0
+	- adaptive ver.1: 1
+	- adaptive ver.2: 2
+  *if not transient analysis, 2nd arg will be ignored
+
+ Usage: zimckt('cktname')
+  *Default is standard transient analysis
+    - if option 'TRAN' is set in netlist
+
+ Usage: zimckt
+  *Start Cmd mode, where zimckt workts like a terminal
+    - You can type 'help' for available instructions
+  
+------------
+
+ Syntax: node names in circuit netlist
+  *Node names must be numbers, e.g. 101 102
+
+ Syntax: linear devices
+  *Available devices: R, C, L, V, I and Mosfet
+    - Resistor: Rxx node1 node2 value
+    - Capacitor: Cxx node1 node2 value
+    - Inductor: Lxx node1 node2 value
+      -- xx: device index (e.g. R1 C24 and M442)
+
+ Syntax: nonlinear devices (only mosfet available now)
+  *MOSFET: Mxx d g s type ch_w ch_l modcard
+    - type: ''n'' or ''p''
+    - modcard(determine the characteristic of MOSFET): 
+	    -- 1: pmos
+	    -- 2: nmos 
+    - modcard number must match the type
+
+ Syntax: model card
+  *Modcard: .MODEL n VT val MU val COX val LAMBDA val CJ0 val
+    - n: 1 for pmos or 2 for nmos
+    - val: value of parameter
+    - e.g. .MODEL 2 VT 0.83 MU 1.5e-1 COX 0.3e-4 LAMBDA 0.05 CJ0 4.0e-14
+
+ Syntax: sources (current source (Ixx) is the same as voltage source)
+  *Voltage: 
+    - Vxx node1 node2 val
+        -- Vxx is default DC
+    - Vxx node1 node2 type val
+        -- type: DC or AC (if DC, val is 0 in AC analysis)
+    - Vxx node1 node2 SIN vdc vac freq phase
+        -- sine waveform for TRAN analysis only
+    - Vxx node1 node2 PWL val0 t1 val1 ...
+        -- piece-wise linear waveform for val0, t0 is 0(s), thus ignored
+    - Vxx node1 node2 PULSE vlow vhigh delay rising width falling period
+        -- pulse waveform for transient analysis only
+
+ Syntax: options
+  *DC: .DC
+  *DC SWEEP: .DC SWEEP Vxx vol_start vol_end vol_step
+    - Vxx denotes voltage source name in the netlist
+  *AC: .AC (type) points freq_start freq_end freq_step
+    - type: LIN (default) or DEC
+  *TRAN: .TRAN tstep tend
+    - integration model is Backward-Euler
+
+ Syntax: print output
+  *plot: plot figures
+    - .PLOTNV node (one .PLOTNV command can only plot one node)
+    - .PLOTBI device (only available for MOSFET(Mxx))
+  *print: print to m file
+    - .PRINTNV node (one command one node)
+
+------------
+
+ Cmd mode:
+  - help: display all available instructions
+  - ls: list files in current folder
+  - run: start an analysis
+     1st: circuit file is required
+          including the path
+     2nd: if doing transient analysis,
+          the TRAN type is required;
+          otherwise, just type ''Enter''
+  - clc: clean the screen
+  - clear: clear all the memory
+  - quit: quit the program
+
+------------
+
+* More features will be included in zimckt in future ... 
+

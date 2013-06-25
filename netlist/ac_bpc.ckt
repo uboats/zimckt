@@ -1,0 +1,13 @@
+* ac test band pass filter
+
+vin 101 0 AC 2
+R1 101 102 200
+C1 102 0 2.5e-6
+C2 102 103 1e-6
+R2 103 0 1000
+
+*.AC DEC 20 10 5000
+.Red priMa
+.PLOTNV 102
+.PLOTNV 103
+*.AC LIN  500 10 5000

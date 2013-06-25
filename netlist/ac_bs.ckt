@@ -1,0 +1,12 @@
+* ac test band stop filter
+
+vin 101 0 AC 1
+*r 100 101 1
+C1 101 102 10e-7
+L1 101 102 .1
+R2 102 0 1000
+
+*.AC LIN  500 10 1000
+.AC DEC 50 10 5000
+*.PLOTNV 102
+.PLOTNV 102

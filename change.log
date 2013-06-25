@@ -1,0 +1,30 @@
+/** 
+***  Change.log edited 6/21/2013 by xueqian
+**/
+
+
+% add 6/24/2013
+Add Cmd mode
+Add text tutorial, remove user-guide
+
+******
+
+% add 3/30/2012
+Add PULSE waveform
+
+% add 3/29/2012
+Add Isrc device, add help manual
+
+% add 3/28/2012
+Add SIN waveform
+
+% add 3/25/2012
+Add DC SWEEP analysis
+
+% add 3/24/2012
+Add AC analysis (linear device only)
+
+% add 3/23/2012
+Add two adaptive tran methods
+
+*****

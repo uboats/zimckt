@@ -1,0 +1,11 @@
+* circuit described in the handout
+Vin 101 0 PWL 0 0 5.0e-10 3.0
+Rin 101 102 10
+L1  102 103 1e-7
+R1 103 104 10
+C1 104 0 0.1e-12
+.TRAN TR 1e-12 2.0e-9
+.PLOTNV 104
+.PLOTNV 101
+.PLOTNV 102
+.PLOTNV 103
