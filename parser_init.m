@@ -1,8 +1,12 @@
-% parser_init - contains short cut constants which should be used
-%               for accessing the data contained in the output of
-%               parser (see: help parser)
-
-%disp('Short Cuts for Circuit Parsing Loaded')
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% parser_init - contains short cut constants which should be used
+%%               for accessing the data contained in the output of
+%%               parser (see: help parser)
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 global R_ M_ N_ C_ L_ V_ I_
 global TYPE_
@@ -106,7 +110,7 @@ TRAN_     = 3;
 DA_         = 4; %! if src not specific type, then available for both dc and ac.
 SIN_        = 30;
 PULSE_   = 31;
-RED_     = 100;
+RD_     = 100;
 % for voltage sources
 V_VALUE_    = 2;
 V_N1_       = 3;

@@ -1,24 +1,29 @@
-function [Res_bi,Res_nv,t] = tr_simadp(T_tot,T_step,tol,step_tol,max_iter)
-
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-%   Adaptive Transient simulation using adaptive step control
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+function [tr_ok,Res_bi,Res_nv,t] = tr_simadp(T_tot,T_step,tol,step_tol,max_iter)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% tr_sim: transient simulation (w/ adaptive step control)
+%%
+%% - T_tot   : total time
+%% - T_step  : time step
+%% - tol     : tolerance
+%% - step_tol: N-R step size
+%% - max_iter: maximum N-R steps
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 global plotbi plotnv T_ X X_pre_t Res_bi_mos
-global Delta_T numNodes G F tr_ok
+global Delta_T numNodes G F
 
 fprintf('**************************************************\n');
-fprintf('   Adaptive TRAN simulation Ver.1 starting...\n   ');
+fprintf('   Adaptive TRAN simulation Ver.1 starts ...\n   ');
 % attach gmin at each node to improve convergence
 gmin = 1e-12;
 setup=0;
 %num_t_pts = ceil(T_tot/T_step);
 %Delta_T = T_step;
 t=[];
-%     save time points
-% for i=1:num_t_pts
-%     t(i) = T_step * (i-1);
-% end
-%     total iterations of tr
+
 tot_iter = 0;
 %  intialize Res_bi and Res_nv
 Res_bi = [];%zeros(num_t_pts,size(plotbi,1));
@@ -61,6 +66,7 @@ while(T_ <= T_tot)
             fprintf(' Error: can not converge at time step %e\n', T_);
             fprintf('   Transient simulation failed\n');
             fprintf('**************************************************\n');
+			tr_ok = 0;
             return
         end
     end

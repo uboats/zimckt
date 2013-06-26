@@ -1,12 +1,13 @@
 /** 
 ***  Tutorial edited 6/21/2013 by xueqian
 **/
+==========================================================
 
-User Guide:
+                      User Guide
 
-------------
+==========================================================
 
- Usage: zimckt('cktname') or cktsim('cktname', tr_type)
+ Usage: zimckt('cktname') or zimckt('cktname', tr_type)
   *cktname: should include the path where the file locates
   *tr_type: determine transient analysis type:    
   	- standard      : 0
@@ -22,7 +23,7 @@ User Guide:
   *Start Cmd mode, where zimckt workts like a terminal
     - You can type 'help' for available instructions
   
-------------
+=================
 
  Syntax: node names in circuit netlist
   *Node names must be numbers, e.g. 101 102
@@ -69,6 +70,8 @@ User Guide:
     - type: LIN (default) or DEC
   *TRAN: .TRAN tstep tend
     - integration model is Backward-Euler
+  *MOR: .RD type
+	- type: PRIMA
 
  Syntax: print output
   *plot: plot figures
@@ -77,7 +80,7 @@ User Guide:
   *print: print to m file
     - .PRINTNV node (one command one node)
 
-------------
+=====================
 
  Cmd mode:
   - help: display all available instructions
@@ -92,7 +95,8 @@ User Guide:
   - clear: clear all the memory
   - quit: quit the program
 
-------------
+==============================================================
 
 * More features will be included in zimckt in future ... 
 
+=============================================================

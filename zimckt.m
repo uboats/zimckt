@@ -1,26 +1,31 @@
-
 function zimckt(ckt,type)
-    
-% for parser & simulation
-% global G X F LINELM NLINELM info numNodes dim METHOD_
-% global DC_ TRAN_ Delta_T TSTEP_ TSTOP_
-% global AC_ AC_PPD_ AC_FSTART_ AC_FSTOP_
-% global dc_ok tr_ok ac_ok S_type PI SIM_
-% global Res_bi_mos plotbi plotnv M X_pre_t X_pre_2t
-global_def;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% zimckt: top-level entry of program zimckt
+%%
+%% - ckt : input circuit file
+%% - type: transient simulation type (default 0)
+%%         if no TRAN analysis is request,
+%%         this option will be ignored
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+global_def;
 quitall = 0;
 oncerun = 0;
+
 while(~quitall)
     clc;
     format long
-   
+    
     %type;
     tr_type=0;
     PI = pi;
     
     %type = 0;
-    if(nargin == 0)        
+    if(nargin == 0)
         Logo;
         
         cmdline = 0;
@@ -48,21 +53,13 @@ while(~quitall)
                 cmdline = 0;
             elseif(strcmp(cmdinput, 'run'))
                 cmdline = 1;
-                tt = input(' - circuit file: ', 's');
-                if(isempty(tt))
+                cc = input(' - circuit file: ', 's');
+                if(isempty(cc))
                     disp('  ** empty file **');
                     cmdline = 0;
                     continue;
                 else
-                    ckt = tt;
-                end
-                disp(' - if transient analysis, enter TR type');
-                disp('   otherwise, type ''Enter''');
-                tt = input('   [default: 0]: ');
-                if(isempty(tt))
-                    tr_type = 0;
-                else
-                    tr_type = tt;
+                    ckt = cc;
                 end
                 
             elseif(strcmp(cmdinput, 'ls'))
@@ -80,9 +77,9 @@ while(~quitall)
         end
         
     elseif(nargin > 2)
-        fprintf('\n Usage: cktsim(''cktname'',type)\n');
+        fprintf('\n Usage: zimckt(''cktname'',type)\n');
         fprintf('  *''type'' is used for transient analysis only:\n    standard       -- 0\n    adaptive ver.1 -- 1\n    adaptive ver.2 -- 2\n');
-        fprintf('  *for other analysis (DC, DC SWEEP and AC), \n   you only need to enter "cktsim(''filename'')"\n');
+        fprintf('  *for other analysis (DC, DC SWEEP and AC), \n   you only need to enter "zimckt(''filename'')"\n');
         fprintf('\n ----  Quit  ----\n\n');
         quitall = 1;
         return;
@@ -112,7 +109,7 @@ while(~quitall)
             quitall = 1;
             return;
         end
- 
+        
     elseif(nargin == 1)
         oncerun = 1;
         if(max(size(ckt))>200)
@@ -125,16 +122,16 @@ while(~quitall)
         else
             tr_type = 0;
         end
-
+        
     end
-
+    
     if(quitall)
         return;
     end
     
     % init macro
     parser_init;
-        
+    
     circuit = ckt;
     
     % Constant settings for nonlinear solver
@@ -163,42 +160,32 @@ while(~quitall)
             quitall = 1;
             return;
         else
-            tt = input(' Press any key to continue ...');
+            cc = input(' Press any key to continue ...');
             continue;
         end
     end
     
-    % time step for transient simulation
-    Delta_T = info(TSTEP_);
     numNodes = length(nodes);
     
-    % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-    %   DC simulation
-    % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-    % initial setup
-    % ids of the mosfets
-    Res_bi_mos = zeros(size(NLINELM,1),1);
-    % analysis type: DC_ and TR_
-    
-    % we first setup all equations without stamping any elements
-    setup = 1;
-    % Do initial stamping for circuit elements to get the total size of the matrix
-    evaluate(numNodes,setup);
-    
-    % rhs vector and the unknow vector
-    F = zeros(dim,1);
-    X = zeros(dim,1);
-    M = zeros(dim,1);
-    % previous solutions for computing the companion model of the capacitors and
-    % inductors
-    X_pre_t = zeros(dim,1);
-    X_pre_2t = zeros(dim,1);
-    % Jacobian matrix for solving delta X or X
-    G = spalloc(dim,dim,0);
-    % attach gmin at each node to improve DC convergence
-    gmin_init = 1e-10;
-    %gmin = 1e-6;
-    %%% Check the stamping
+    if(info(SIM_) ~= RD_)
+        % time step for transient simulation
+        Delta_T = info(TSTEP_);
+        Res_bi_mos = zeros(size(NLINELM,1),1);
+        setup = 1;
+        evaluate(numNodes,setup);
+        
+        % rhs vector and the unknow vector
+        F = zeros(dim,1);
+        X = zeros(dim,1);
+        M = zeros(dim,1);
+        % inductors
+        X_pre_t = zeros(dim,1);
+        X_pre_2t = zeros(dim,1);
+        % Jacobian matrix for solving delta X or X
+        G = spalloc(dim,dim,0);
+        % attach gmin at each node to improve DC convergence
+        gmin_init = 1e-10;
+    end
     
     fprintf(' >  system dimension is %d-by-%d\n\n', dim, dim);
     %info(SIM_) = DC_;
@@ -217,9 +204,8 @@ while(~quitall)
             Res_bi = zeros(max(size(sweep)),size(plotbi,1));%! save complex number
             Res_nv = zeros(max(size(sweep)),size(plotnv,1));%
             
-            
             fprintf('**************************************************\n');
-            fprintf('   DC SWEEP simulation starting...\n   ');
+            fprintf('   DC SWEEP simulation starts ...\n   ');
             t_dc = cputime;
             for k=1:(s_end-s_start)/s_h+1
                 LINELM(var,V_VALUE_) = sweep(k);
@@ -254,7 +240,7 @@ while(~quitall)
                 
                 fprintf('**************************************************\n');
                 fprintf(' Mission Accomplished!\n');
-                fprintf('\n ----  Quit  ----\n\n');
+                %fprintf('\n ----  Quit  ----\n\n');
             else
                 %fprintf('\n**************************************************\n');
                 fprintf('\n Mission Failed!\n');
@@ -265,6 +251,7 @@ while(~quitall)
             
         else
             % DC solution should be stored into the Res_dc vector
+            t_dc = cputime;
             Res_dc = dc_sim(tol,step_tol,max_iter,gmin_init);
             %dc_ok = 0;
             if(dc_ok==1)
@@ -274,7 +261,7 @@ while(~quitall)
                 end
                 fprintf('**************************************************\n');
                 fprintf(' Mission Accomplished!\n');
-                fprintf('\n ----  Quit  ----\n\n');
+                %fprintf('\n ----  Quit  ----\n\n');
             else
                 %fprintf('**************************************************\n');
                 fprintf('\n Mission Failed!\n');
@@ -286,8 +273,19 @@ while(~quitall)
         end
         
     elseif(info(SIM_) == TRAN_)
+        disp('**************************************************');
+        disp('  Do transient analysis, enter TR type');
+        disp('    1: adaptive method');
+        disp('    2: adaptive method');
+        disp('    default: type ''Enter''');
+        cc = input('  [default: normal]: ');
+        if(isempty(cc))
+            tr_type = 0;
+        else
+            tr_type = cc;
+        end
+        
         S_type = DC_;
-        % DC solution should be stored into the Res_dc vector
         Res_dc = dc_sim(tol,step_tol,max_iter,gmin_init);
         
         if(dc_ok==0)
@@ -309,22 +307,23 @@ while(~quitall)
         
         if (tr_type == 0)
             % Do standard TRAN analysis using traditional method
-            [Res_bi,Res_nv,t] = tr_sim(T_tot,T_step,tol,step_tol,max_iter_tr);
+            [tr_ok,Res_bi,Res_nv,t] = tr_sim(T_tot,T_step,tol,step_tol,max_iter_tr);
         elseif (tr_type == 1)
             % Do adaptive TRAN analysis using adaptive method
-            [Res_bi,Res_nv,t] = tr_simadp(T_tot,T_step_init,tol,step_tol,max_iter_tr);
+            [tr_ok,Res_bi,Res_nv,t] = tr_simadp(T_tot,T_step_init,tol,step_tol,max_iter_tr);
         elseif (tr_type == 2)
             % Do adaptive TRAN analysis using adaptive method
-            [Res_bi,Res_nv,t] = tr_simadp2(T_tot,T_step_init,tol,step_tol,max_iter_tr);
+            [tr_ok,Res_bi,Res_nv,t] = tr_simadp2(T_tot,T_step_init,tol,step_tol,max_iter_tr);
         end
         
         % plot and print the solution
         if(tr_ok==1)
+            % DC solution should be stored into the Res_dc vector
             output_sol(circuit, nodes, names, plotbi, plotnv, printnv, Res_nv, Res_bi, t);
             
             fprintf('**************************************************\n');
             fprintf(' Mission Accomplished!\n');
-            fprintf('\n ----  Quit  ----\n\n');
+            %fprintf('\n ----  Quit  ----\n\n');
         else
             fprintf('**************************************************\n');
             fprintf('\n Mission Failed!\n');
@@ -360,23 +359,50 @@ while(~quitall)
             
             fprintf('**************************************************\n');
             fprintf(' Mission Accomplished!\n');
-            fprintf('\n ----  Quit  ----\n\n');
+            %fprintf('\n ----  Quit  ----\n\n');
         else
             %fprintf('**************************************************\n');
             fprintf('\n Mission Failed!\n');
             fprintf('\n ----  Quit  ----\n\n');
             quitall = 1;
             return;
-		end
-
-	elseif(info(SIM_) == RED_)
-		fprintf(' Model order reduction is under construction\n\n');
-		oncerun = 1;
-	else
-		fprintf('\n Unknown Sim type\n');
-		fprintf(' ----  Quit  ----\n\n');
-		oncerun = 1;
-		quitall = 1;
+        end
+        
+    elseif(info(SIM_) == RD_)
+        S_type = RD_;
+        
+        if(info(METHOD_) == PRIMA_)
+            orders = 10;
+            exps = 0;
+            port_ind1 = 1;
+            port_ind2 = 1;
+            plotf = 1;
+            
+            %% PRIMA
+            [rd_ok] = prima(circuit, names, nodes, orders, exps, port_ind1, port_ind2, plotf);
+            
+            if(rd_ok)
+                fprintf('\n**************************************************\n');
+                fprintf(' Mission Accomplished!\n');
+                %fprintf('\n ----  Quit  ----\n\n');
+            else
+                fprintf('\n Mission Failed!\n');
+                fprintf('\n ----  Quit  ----\n\n');
+                quitall = 1;
+                return;
+            end
+            
+        else
+            fprintf('\n Unknown MOR method\n');
+            %fprintf(' ----  Quit  ----\n\n');
+            oncerun = 1;
+            quitall = 1;
+        end
+    else
+        fprintf('\n Unknown Sim type\n');
+        %fprintf(' ----  Quit  ----\n\n');
+        oncerun = 1;
+        quitall = 1;
     end
     
     if(oncerun)
@@ -385,26 +411,39 @@ while(~quitall)
     else
         oncerun = 0;
         quitall = 0;
-        cmdinput = input(' Press any key to continue ...', 's');
+        cmdinput = input('\n Press any key to continue ...\n', 's');
     end
     
 end
 
+fprintf(' ----  Quit  ----\n\n');
+return
 end
+%% end of function zimckt
 
 
 function Logo()
-fprintf('\n---- Zimckt: Circuit Simulator for MATLAB  ----')
-fprintf('\n             by xueqian 2012\n')
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% Logo: print simple help information
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+fprintf('===============================================\n');
+fprintf('     Zimckt: Circuit Simulator for MATLAB      \n');
+fprintf('             by xueqian 2013 \n');
+fprintf('===============================================\n');
 fprintf('\n   Analysis:');
 fprintf('\n     * AC');
 fprintf('\n     * DC & DC SWEEP');
 fprintf('\n     * TRANS (w/ adaptive step control)');
-fprintf('\n     * PRIMA (under construction...)');
+fprintf('\n     * MOR: PRIMA');
 fprintf('\n   Sources types available:');
-fprintf('\n     * AC, DC, PWL, SIN and PULSE');
+fprintf('\n     * AC, DC, PWL, SIN and PULSE\n');
 fprintf('\n---------------------------------------------\n');
-fprintf('\n   More details: please read tutorial\n');
+fprintf('\n   More details: please read tutorial');
 fprintf('\n   Type ''help'' to see instructions\n');
 fprintf('\n---------------------------------------------\n\n');
 end
+%% end of function Logo

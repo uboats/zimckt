@@ -1,10 +1,28 @@
 function [parse_ok,LINELEM,NLNELEM,INFO,NODES,NAMES,PRINTNV,PLOTNV,PLOTBI] = parser(ckt)
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% parser: detailed extract the circuit info 
+%%         after parsing the input file
+%%
+%% - ckt     : input circuit file
+%% - parse_ok: if failed 0, otherwise 1
+%% - LINELEM : linear devices
+%% - NLNELEM : nonlinear devices
+%% - INFO    : mosfet card and simulation options
+%% - NODES   : node index
+%% - NAMES   : device name
+%% - PRINTNV : print node voltage
+%% - PLOTNV  : plot node voltage
+%% - PLOTBI  : plot branch current
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %cparse_init;
 parser_init;
 
-% EA's additions;
+% init;
 NLNELEM=[]; LINELEM=[];
 INFO=[]; NODES=[];
 NLNNAME=[]; LINNAME=[];
@@ -182,5 +200,7 @@ for i = 1:size(PLOTBI_INIT,1),
     PLOTBI(i,6) = PLOTBI_INIT(i);
 end
 
-
 %PLOTBI
+
+end
+%% end of function parser

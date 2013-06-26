@@ -1,11 +1,22 @@
-%function [ELEM, NAMES] = loadckt(ckt)
 function [parse_ok,ELEM,INFO,NODES,NAMES,PRINTNV,PLOTNV,PLOTBI_INIT] = loadckt(ckt)
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
-
-%cparse_init;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% loadckt: bottom level parse the circuit file
+%%
+%% - ckt        : input circuit file
+%% - parse_ok   : if failed 0, otherwise 1
+%% - ELEM       : all the devices
+%% - INFO       : mosfet card and simulation options
+%% - NODES      : node indices
+%% - NAMES      : node names
+%% - PRINTNV    : node indices for printing results to screen
+%% - PLOTNV     : node indices for plotting node voltages
+%% - PLOTBI_INIT: pairs of node indices for plotting branch current
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 parser_init;
-
 parse_ok = 1;
 
 ELEM=[];INFO=[];NODES=[];NAMES=[];
@@ -619,7 +630,7 @@ while ~feof(fip)
                         if(strcmp(ptype,'PRIMA'))
  	                       	INFO(METHOD_) = PRIMA_;
     	                    
-                	        INFO(SIM_) = RED_;
+                	        INFO(SIM_) = RD_;
 						else
  	                       	fprintf(' *Error at row %d: unknown MOR option\n', num_row);
         	                parse_ok=0;
@@ -645,7 +656,7 @@ fclose(fip);
 
 if(num_option == 0)
     fprintf(' *Error: simulation type is required (.DC, .AC, or .TRAN)!!\n');
-    fprintf('         setup info can be found in cktsim(''help'')\n');
+    fprintf('         setup info can be found in tutorial\n');
     parse_ok=0;
     return
 elseif(num_option > 1)
@@ -676,10 +687,21 @@ else
 end
 
 end
+%% end of function loadckt
 
 
 function [nodeidx, number_nunk, nodelist] = addnode(nname, nodelist, number_nunk)
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% addnode: add node to table
+%%
+%% - nname      : node name
+%% - nodelist   : table
+%% - number_nunk: current table size
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 nflag=0;
 
 if(number_nunk == 0 && nname ~= 0)
@@ -708,11 +730,24 @@ elseif(number_nunk ~= 0 && nname ~= 0)
 else
     nodeidx = -1;
 end
-
-
 end
+%% end of function addnode
 
 function [parse_ok,nodeidx, number_nunk, nodelist] = findnode(nname, nodelist, number_nunk, option, parse_ok)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% findnode: find node index from table
+%%
+%% - nname      : node name
+%% - nodelist   : table
+%% - number_nunk: current table size
+%% - option     : if 1 node in the option line, 
+%%                   0 node in the element line
+%% - parse_ok   : if failed 0, otherwise 1
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 nflag = 0;
 nodeidx = 1;
 
@@ -738,9 +773,21 @@ elseif(nflag == 0 && option==1)
 end
 
 end
+%% end of function findnode
 
 
 function [NAMES] = combNAMES(dname, NAMES, number_elem)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% combNAMES: rename device and store it to NAMES
+%%
+%% - dname      : device name
+%% - NAMES      : table stores all device names
+%% - number_elem: current number of device in the table
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 s_d = size(dname,2);
 s_n = size(NAMES,2);
 kk=[];
@@ -763,8 +810,21 @@ elseif(s_d < s_n)
 end
 NAMES(number_elem, :) = dname;
 end
+%% end of function combELEM
+
 
 function [ELEM] = combELEM(A, ELEM, number_elem)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% combELEM: store all device info to ELEM
+%%
+%% - A          : device info
+%% - ELEM       : table stores all device info
+%% - number_elem: current number of device in the table
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 s_a = size(A,2);
 s_e = size(ELEM,2);
 if(s_a > s_e)
@@ -776,8 +836,22 @@ elseif(s_a < s_e)
 end
 ELEM(number_elem,:) = A;
 end
+%% end of function combELEM
+
 
 function [parse_ok,didx] = findelem(dname, NAMES, number_name, parse_ok)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% findelem: find a device from table for branch current or DC_SWEEP
+%%
+%% - dname      : device name
+%% - NAMES      : table stores all device name
+%% - number_name: current table size
+%% - parse_ok   : if failed 0, otherwise 1
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 nflag = 0;
 didx = 1;
 
@@ -800,3 +874,4 @@ if(nflag == 0)
     return;
 end
 end
+%% end of function findelem

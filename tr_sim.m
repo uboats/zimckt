@@ -1,14 +1,22 @@
-function [Res_bi,Res_nv,t] = tr_sim(T_tot,T_step,tol,step_tol,max_iter)
-
-%%%%%%%%%%%%%%%%%%%%%%
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-%   Transient simulation using fixed time step
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+function [tr_ok,Res_bi,Res_nv,t] = tr_sim(T_tot,T_step,tol,step_tol,max_iter)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% tr_sim: transient simulation (normal)
+%%
+%% - T_tot   : total time
+%% - T_step  : time step
+%% - tol     : tolerance
+%% - step_tol: N-R step size
+%% - max_iter: maximum N-R steps
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 global plotbi plotnv T_ X X_pre_t X_pre_2t Res_bi_mos I_pre I_eqp
-global G F numNodes Delta_T num_C tr_n tr_ok
+global G F numNodes Delta_T num_C tr_n
 
 fprintf('**************************************************\n');
-fprintf('   Standard TRAN simulation starting...\n   ');
+fprintf('   Standard TRAN simulation starts ...\n   ');
 
 % attach gmin at each node to improve convergence
 gmin = 1e-12;

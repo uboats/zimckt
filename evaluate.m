@@ -1,13 +1,16 @@
-%-*-matlab-*-
-% This function framework has been given, though you have to finish that
 function evaluate(numNodes,setup)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Rigth hand side vector F and left hand side vector X
-% numNodes: number of circuit nodes
-% dt: delta t of the current time step
-% S_type: the source type (DC_ or PWL_)
-% All of the stampings are building the matrix for solving deltaX
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% evaluate: evaluate device and stamp device values
+%%           all evaluation is to solve delta X in N-R solver
+%%
+%% - numNodes: circuit size
+%% - setup   : if 1, create system matrices
+%%             otherwise, stamp elements to matrices
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 global LINELM NLINELM BE_ TR_ tt
 global F G C_idx C_num num_C dim
@@ -18,7 +21,7 @@ F = zeros(dim,1);
 % number of capacitors
 C_num=0;
 C_idx=1;
-tt = TR_;
+
 tt = BE_;
 
 if (setup==1)
@@ -39,10 +42,21 @@ if(setup==1)
 end
 
 end
+%% end of function evaluate
 
 
 function ldev(numLINE,setup)
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% ldev: stamp linear devices
+%%
+%% - numLINE: number of linear devices
+%% - setup  : if 1, create system matrices
+%%            otherwise, stamp elements to matrices
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 global LINELM TYPE_ C_ L_ R_ V_ I_ PI 
 global R_N1_ R_N2_ C_N1_ C_N2_ L_N1_ L_N2_ L_IC_
 global R_VALUE_ C_VALUE_ L_VALUE_
@@ -324,9 +338,21 @@ for i = 1:numLINE
     end
 end
 end
+%% end of function ldev
+
 
 function nldev(numNLINE,setup)
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% evaluate: stamp nonlinear device
+%%
+%% - numNLINE: number of nonlinear devices
+%% - setup   : if 1, create system matrices
+%%             otherwise, stamp elements to matrices
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 global NLINELM TYPE_ Delta_T BE_ TR_ tt M_TYPE_
 global M_ND_ M_NG_ M_NS_ M_W_ M_L_ M_VT_ M_MU_ M_COX_ M_LAMBDA_ M_CJ0_ M_
 global TRAN_ S_type AC_ Res_bi_mos C_idx C_num
@@ -387,12 +413,21 @@ for i = 1:numNLINE,
     end
 end
 end
+%% end of function nldev
 
-% stamp resistor
+
 function Stamp_Res(n1,n2,g)
-% Stamp resistor
-% solver for delta X
-%  Trapizoidal approximation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Stamp_Res: stamp resistor
+%%
+%% - n1: node 1
+%% - n2: node 2
+%% - g : value
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 global G
 % Put your codes here
 if (n1>0) && (n2>0)
@@ -412,16 +447,26 @@ else
     return;
 end
 end
+%% end of function Stamp_Res
 
 
-% stamp capacitor
 function Stamp_Cap(n1,n2,val,i)
-% Stamp capacitor
-% solver for delta X
-%  BE approximation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Stamp_Cap: stamp capacitor (BE approximation)
+%%
+%% - n1  : node 1
+%% - n2  : node 2
+%% - val : value
+%% - i   : device index
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 global TR_ BE_ G F X_pre_t I_pre I_eqp tt tr_n
 global S_type TRAN_
 %tt = BE_;
+
 if (n1>0 && n2>0)
     G(n1, n1) = G(n1, n1) + val;
     G(n1, n2) = G(n1, n2) - val;
@@ -473,13 +518,23 @@ if(S_type == TRAN_)
         end
     end
 end
-
 end
+%% end of function Stamp_Cap
 
-% stamp inductor
+
 function Stamp_Ind(n1,n2,val,L_CUR_idx)
-% Stamp inductor
-%  BE approximation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Stamp_Ind: stamp inductor (BE approximation)
+%%
+%% - n1       : node 1
+%% - n2       : node 2
+%% - val      : value
+%% - L_CUR_idx: pseudo node index
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 global G F X_pre_t
 global  S_type TRAN_ DC_ AC_
 % Put your codes here
@@ -530,27 +585,45 @@ elseif(S_type == AC_)
         G(L_CUR_idx, n2) = 1;
         G(L_CUR_idx, L_CUR_idx) = 1/val;
         
-        %F(L_CUR_idx) = X_pre_t(L_CUR_idx)/val;
+        %   %F(L_CUR_idx) = X_pre_t(L_CUR_idx)/val;
     elseif n1>0
         G(n1, L_CUR_idx) = 1;
         G(L_CUR_idx, n1) = -1;
         G(L_CUR_idx, L_CUR_idx) = 1/val;
         
-        %F(L_CUR_idx) = X_pre_t(L_CUR_idx)/val;
+        %   %F(L_CUR_idx) = X_pre_t(L_CUR_idx)/val;
     elseif n2>0
         G(n2, L_CUR_idx) = -1;
         G(L_CUR_idx, n2) = 1;
         G(L_CUR_idx, L_CUR_idx) = 1/val;
         
-        %F(L_CUR_idx) = X_pre_t(L_CUR_idx)/val;
+        %   %F(L_CUR_idx) = X_pre_t(L_CUR_idx)/val;
     end
 end
-
 end
+%% end of function Stamp_Ind
 
 
 % stamp mosfet
 function [ids]=Stamp_Mos(nd,ng,ns,Vt,Mu,Cox,W,L,Lambda,type)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Stamp_Mos: stamp mosfet
+%%
+%% - nd    : drain
+%% - ng    : gate
+%% - ns    : source
+%% - Vt    : threshold
+%% - Mu    : transconductance coefficient
+%% - Cox   : coupling capacitance
+%% - W     : channel width
+%% - L     : channel length
+%% - Lambda: channel-length modulation
+%% - type  : 1 nmos, 0 pmos
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MOS stamping function:
 % type =1 for NMOS;type=0 for PMOS
 % solver for delta X
@@ -579,7 +652,7 @@ else
     disp(' Error: unknown MOSFET DC condition. Quit!')
     return;
 end
-%         PMOS fac=-1; NMOS fac=1;
+%PMOS fac=-1; NMOS fac=1;
 fac = (-1)^(1-type);
 Vgs = fac*(Vgs);
 Vds = fac*(Vds);
@@ -587,55 +660,55 @@ gm = MOSVI_Gm(Vgs,Vds,Vt,Mu,Cox,W,L,Lambda,type);
 gds = MOSVI_Gds(Vgs,Vds,Vt,Mu,Cox,W,L,Lambda,type);
 ids = MOSVI_Ids(Vgs,Vds,Vt,Mu,Cox,W,L,Lambda,type);
 ids = fac*ids;
-%         Stamp voltage controld current source Vgs,gm
+%Stamp voltage-control current source Vgs,gm
 if nd>0 && ns>0 && ng>0,
     G(nd, ng) = G(nd, ng) + gm;
     G(nd, ns) = G(nd, ns) - gm;
     G(ns, ng) = G(ns, ng) - gm;
     G(ns, ns) = G(ns, ns) + gm;
-    %        F(nd)=F(nd)-((X(ng)-X(ns))*gm+gds*(X(nd)-X(ns)));
-    %        F(ns)=F(ns)+((X(ng)-X(ns))*gm+gds*(X(nd)-X(ns)));
+    %         %F(nd)=F(nd)-((X(ng)-X(ns))*gm+gds*(X(nd)-X(ns)));
+    %         %F(ns)=F(ns)+((X(ng)-X(ns))*gm+gds*(X(nd)-X(ns)));
     F(nd)=F(nd)+((X(ng)-X(ns))*gm+gds*(X(nd)-X(ns)));
     F(ns)=F(ns)-((X(ng)-X(ns))*gm+gds*(X(nd)-X(ns)));
     F(nd)=F(nd)-ids;
     F(ns)=F(ns)+ids;
-    %       F(nd)=F(nd)+ids;
-    %      F(ns)=F(ns)-ids;
+    %         %F(nd)=F(nd)+ids;
+    %         %F(ns)=F(ns)-ids;
 elseif nd<0 && ns>0 && ng>0,
     G(ns, ns) = G(ns, ns) + gm;
     G(ns, ng) = G(ns, ng) - gm;
-    %         F(ns)=F(ns)+((X(ng)-X(ns))*gm+gds*(-X(ns)));
+    %         %F(ns)=F(ns)+((X(ng)-X(ns))*gm+gds*(-X(ns)));
     F(ns)=F(ns)-((X(ng)-X(ns))*gm+gds*(-X(ns)));
     
     F(ns)=F(ns)+ids;
-    %        F(ns)=F(ns)-ids;
+    %        %F(ns)=F(ns)-ids;
 elseif nd>0 && ns<0 && ng>0,
     G(nd, ng) = G(nd, ng) + gm;
-    %        F(nd)=F(nd)-((X(ng))*gm+gds*(X(nd)));
+    %        %F(nd)=F(nd)-((X(ng))*gm+gds*(X(nd)));
     F(nd)=F(nd)+((X(ng))*gm+gds*(X(nd)));
     F(nd)=F(nd)-ids;
-    %        F(nd)=F(nd)+ids;
+    %        %F(nd)=F(nd)+ids;
     
 elseif nd>0 && ns>0 && ng<0,
     G(nd, ns) = G(nd, ns) - gm;
     G(ns, ns) = G(ns, ns) + gm;
-    %        F(nd)=F(nd)-((-X(ns))*gm+gds*(X(nd)-X(ns)));
-    %        F(ns)=F(ns)+((-X(ns))*gm+gds*(X(nd)-X(ns)));
+    %        %F(nd)=F(nd)-((-X(ns))*gm+gds*(X(nd)-X(ns)));
+    %        %F(ns)=F(ns)+((-X(ns))*gm+gds*(X(nd)-X(ns)));
     F(nd)=F(nd)+((-X(ns))*gm+gds*(X(nd)-X(ns)));
     F(ns)=F(ns)-((-X(ns))*gm+gds*(X(nd)-X(ns)));
     F(nd)=F(nd)-ids;
     F(ns)=F(ns)+ids;
-    %        F(nd)=F(nd)+ids;
-    %        F(ns)=F(ns)-ids;
+    %        %F(nd)=F(nd)+ids;
+    %        %F(ns)=F(ns)-ids;
 elseif nd<0 && ns>0 && ng<0,
     G(ns, ns) = G(ns, ns) + gm;
-    %        F(ns)=F(ns)+((-X(ns))*gm+gds*(-X(ns)));
+    %        %F(ns)=F(ns)+((-X(ns))*gm+gds*(-X(ns)));
     F(ns)=F(ns)-((-X(ns))*gm+gds*(-X(ns)));
     
     F(ns)=F(ns)+ids;
-    %     F(ns)=F(ns)-ids;
+    %        %F(ns)=F(ns)-ids;
 end
-%       Stamp Gds
+%Stamp Gds
 if nd>0 && ns>0,
     G(nd, nd) = G(nd, nd) + gds;
     G(nd, ns) = G(nd, ns) - gds;
@@ -646,13 +719,31 @@ elseif nd>0,
 elseif ns>0,
     G(ns, ns) = G(ns, ns) + gds;
 end
-
 end
+%% end of function Stamp_Mos
+
 
 % Mosfet function: Ids vs. Vds for NMOS and Isd vs. Vsd
 function Ids= MOSVI_Ids(Vgs,Vds,Vt,Mu,Cox,W,L,Lambda,type)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% MOSVI_Ids: evaluate Ids
+%%
+%% - Vgs   : gate-2-source voltage
+%% - Vds   : drain-2-source voltage
+%% - Vt    : threshold
+%% - Mu    : transconductance coefficient
+%% - Cox   : coupling capacitance
+%% - W     : channel width
+%% - L     : channel length
+%% - Lambda: channel-length modulation
+%% - type  : 1 nmos, 0 pmos
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if type==1
-    %     NMOS
+    %NMOS
     if (Vgs>Vt) && (Vds>(Vgs-Vt)),
         Ids=0.5*Mu*Cox*W/L*(Vgs-Vt)^2*(1+Lambda*Vds);
     elseif (Vgs>Vt) && (Vds<=Vgs-Vt),
@@ -661,7 +752,7 @@ if type==1
         Ids=0;
     end
 elseif type==0
-    %     PMOS
+    %PMOS
     Vsg=Vgs;
     Vsd=Vds;
     if (Vsg>-Vt) && (Vsd>(Vsg+Vt)),
@@ -674,12 +765,30 @@ elseif type==0
     Ids=Isd;
 end
 end
+%% end of function MOSVI_Ids
 
 
 % Mosfet function: Gds vs. Vds for NMOS and Gsd vs. dVsd
 function Gds = MOSVI_Gds(Vgs,Vds,Vt,Mu,Cox,W,L,Lambda,type)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% MOSVI_Gds: evaluate equivalent conductance
+%%
+%% - Vgs   : gate-2-source voltage
+%% - Vds   : drain-2-source voltage
+%% - Vt    : threshold
+%% - Mu    : transconductance coefficient
+%% - Cox   : coupling capacitance
+%% - W     : channel width
+%% - L     : channel length
+%% - Lambda: channel-length modulation
+%% - type  : 1 nmos, 0 pmos
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if type==1
-    %     NMOS
+    %NMOS
     if (Vgs>Vt) && (Vds>(Vgs-Vt)),
         Gds=0.5*Mu*Cox*W/L*(Vgs-Vt)^2*(Lambda);
     elseif (Vgs>Vt) && (Vds<=Vgs-Vt),
@@ -689,7 +798,7 @@ if type==1
         Gds=0;
     end
 elseif type==0
-    %     PMOS
+    %PMOS
     Vsg=Vgs;
     Vsd=Vds;
     if (Vsg>-Vt) && (Vsd>(Vsg+Vt)),
@@ -702,12 +811,30 @@ elseif type==0
     end
 end
 end
+%% end of function MOSVI_Gds
 
 
 % Mosfet function: Ids vs. Vds for NMOS and Isd vs. Vsd
 function Gm = MOSVI_Gm(Vgs,Vds,Vt,Mu,Cox,W,L,Lambda,type)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% MOSVI_Gm: evaluate trans-conductance
+%%
+%% - Vgs   : gate-2-source voltage
+%% - Vds   : drain-2-source voltage
+%% - Vt    : threshold
+%% - Mu    : transconductance coefficient
+%% - Cox   : coupling capacitance
+%% - W     : channel width
+%% - L     : channel length
+%% - Lambda: channel-length modulation
+%% - type  : 1 nmos, 0 pmos
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if type==1
-    %     NMOS
+    %NMOS
     if (Vgs>Vt) && (Vds>(Vgs-Vt)),
         Gm=Mu*Cox*W/L*(Vgs-Vt)*(1+Lambda*Vds);
     elseif (Vgs>Vt) && (Vds<=Vgs-Vt),
@@ -716,7 +843,7 @@ if type==1
         Gm=0;
     end
 elseif type==0
-    %     PMOS
+    %PMOS
     Vsg=Vgs;
     Vsd=Vds;
     if (Vsg>-Vt) && (Vsd>(Vsg+Vt)),
@@ -729,3 +856,4 @@ elseif type==0
     Gm=Isd;
 end
 end
+%% end of function MOSVI_Gm

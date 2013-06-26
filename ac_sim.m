@@ -1,11 +1,22 @@
 function [ Res_nv, Res_bi, freq ] = ac_sim(dc_point,ac_type,f_h,fstart,fend)
-%AC_SIM Summary of this function goes here
-%   Detailed explanation goes here
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% ac_sim: ac simulation
+%%
+%% - dc_point: dc solution
+%% - ac_type : ac type (dec or lin)
+%% - f_h     : frequence step size
+%% - fstart  : start frequence
+%% - fend    : stop frequence
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 global DEC_ LIN_ ac_ok numNodes freq_t
 global plotbi plotnv G F X vin_amp
 
 fprintf('**************************************************\n');
-fprintf('   AC simulation starting...\n   ');
+fprintf('   AC simulation starts ...\n   ');
 
 ac_ok=0;
 setup=0;
@@ -90,7 +101,6 @@ ac_ok = 1;
 
 fprintf('\n     finished!\n');
 fprintf('   (%d) sweeps for AC analysis \n',sweep);
-%fprintf('   (%d) N-R iterations for TRAN analysis \n',tot_iter);
 fprintf('   CPU time for AC analysis is %.4f(s) \n',t_ac);
 
 fprintf('**************************************************\n');

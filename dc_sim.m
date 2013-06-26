@@ -1,13 +1,22 @@
 function [Res_dc] = dc_sim(tol,step_tol,max_iter,gmin_init)
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-%   DC simulation
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% dc_sim: dc simulation
+%%
+%% - tol      : tolerance
+%% - step_tol : N-R step size
+%% - max_iter : maximum N-R steps
+%% - gmin_init: initial gmin value
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 global X G F numNodes dc_ok 
 global DC_SWEEP info METHOD_
 
 if info(METHOD_) ~= DC_SWEEP
     fprintf('**************************************************\n');
-    fprintf('   DC simulation starting...\n   ');
+    fprintf('   DC simulation starts ...\n   ');
 end
 num_iter_dc = 0;
 
@@ -15,7 +24,7 @@ dc_ok = 0;
 t_dc = cputime;
 
 setup = 0;
-% Put your codes here
+
 len = length(X);
 X_pre = X;
 Gmin = gmin_init;
@@ -97,6 +106,5 @@ if dc_ok == 1 && info(METHOD_) ~= DC_SWEEP
 elseif dc_ok == 1 && info(METHOD_) == DC_SWEEP
     fprintf('.');
 end
-
 
 end

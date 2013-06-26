@@ -1,12 +1,22 @@
-function [Res_bi,Res_nv,t] = tr_simadp2(T_tot,T_step,tol,step_tol,max_iter)
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-%   Adaptive Transient simulation using adaptive step control
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+function [tr_ok,Res_bi,Res_nv,t] = tr_simadp2(T_tot,T_step,tol,step_tol,max_iter)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% tr_sim: transient simulation (w/ adaptive step control)
+%%
+%% - T_tot   : total time
+%% - T_step  : time step
+%% - tol     : tolerance
+%% - step_tol: N-R step size
+%% - max_iter: maximum N-R steps
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 global plotbi plotnv T_ X X_pre_t Res_bi_mos
-global Delta_T numNodes G F tr_ok
+global Delta_T numNodes G F
 
 fprintf('**************************************************\n');
-fprintf('   Adaptive TRAN simulation Ver.2 starting...\n   ');
+fprintf('   Adaptive TRAN simulation Ver.2 starts ...\n   ');
 % attach gmin at each node to improve convergence
 gmin = 1e-12;
 setup=0;
@@ -60,6 +70,7 @@ while(T_ <= T_tot)
             fprintf(' Error: can not converge at time step %f\n', T_);
             fprintf('   Transient simulation failed\n');
             fprintf('**************************************************\n');
+			tr_ok = 0;
             return
         end
     end
@@ -74,9 +85,6 @@ while(T_ <= T_tot)
         fprintf('\n   ');
     end
     
-    % check the variation of srcs in the following 2~3 steps
-    % if srcs keep unchanged, then increase time step
-    % otherwise, keep the initial time step
     [option, activity] = checksrc(T_, T_step);
     
     tflag=0;
@@ -124,9 +132,23 @@ fprintf('   CPU time for TRAN analysis is %.4f(s) \n',t_tr);
 fprintf('**************************************************\n');
 
 end
+%% end of function tr_simadp2
 
 
 function [option, activity] = checksrc(T_, T_step)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% checksrc: evaluation adaptive time step
+%%           check the variation of srcs in the following 2~3 steps
+%%           if srcs keep unchanged, then increase time step
+%%           otherwise, keep the initial time step
+%%
+%% - T_    : current time
+%% - T_step: time step
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 global LINELM V_ TYPE_
 global PWL_ V_TYPE_ V_POINTS_ V_VALUE_
 
@@ -229,3 +251,4 @@ for i = 1:numLINE
 end
 
 end
+%% end of function checksrc

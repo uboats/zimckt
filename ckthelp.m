@@ -1,5 +1,12 @@
 function ckthelp()
-% by xueqian 03/24/2012
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% ckthelp: print available instructions
+%%
+%% by xueqian 06/24/2012
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 fprintf('\n');
 %disp('  Available Instructions:');
 disp('  - help: display all available instructions');

@@ -1,14 +1,14 @@
 /** 
 ***  README edited 6/21/2013 by xueqian
 **/
+=========================================================
 
-zimckt is a spice-accurate circuit simulator for matlab
+Zimckt is a spice-accurate circuit simulator for matlab
 
 -- Previous progress can be found in change.log
 -- Please read Tutorial before using it
 
+========================================================
 
-
-06/21/2013
-version 0.99
+Zimckt is an open source program.
 
