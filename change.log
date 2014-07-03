@@ -1,6 +1,13 @@
 /** 
-***  Change.log edited 6/26/2013 by xueqian
+***  Change.log edited 5/11/2014 by xueqian
 **/
+==================================================
+
+version 1.01
+
+% add 4/11/2014
+Now node name can be any strings
+
 ==================================================
 
 version 1.00

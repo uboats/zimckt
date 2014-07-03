@@ -165,7 +165,7 @@ while(~quitall)
         end
     end
     
-    numNodes = length(nodes);
+    numNodes = length(nodes)-1;% remove gnd
     
     if(info(SIM_) ~= RD_)
         % time step for transient simulation
@@ -411,7 +411,7 @@ while(~quitall)
     else
         oncerun = 0;
         quitall = 0;
-        cmdinput = input('\n Press any key to continue ...\n', 's');
+        cmdinput = input('\n Press ''Enter'' to continue ...\n', 's');
     end
     
 end

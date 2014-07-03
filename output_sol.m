@@ -4,7 +4,7 @@ function output_sol(circuit, nodes, names, plotbi, plotnv, printnv, Res_nv, Res_
 %% output_sol: print and plot the solutions
 %%
 %% - circuit: input circuit file
-%% - nodes  : node index
+%% - nodes  : node dict map
 %% - names  : device name
 %% - plotbi : plot branch current
 %% - plotnv : plot node voltage
@@ -22,12 +22,25 @@ global info METHOD_ SWEEP_DEV
 fprintf('\n');
 
 nv=[];
+tmpstr = keys(nodes);
+tmpval = cell2mat(values(nodes));
 for m=1:size(plotnv,1)
-    nv = combp(num2str(nodes(plotnv(m))),nv,m);
+    %nv = combp(tmpstr(plotnv(m)),nv,m);
+    for ll=1:length(tmpval)
+        if(tmpval(ll)==plotnv(m))
+            nv = [nv; tmpstr(ll)];
+        end
+    end
 end
 bi=[];
 for m=1:size(plotbi,1)
-    bi = combp(num2str(nodes(plotbi(m))),bi,m);
+    %bi = combp(tmpstr(plotbi(m)),bi,m);
+    for ll=1:length(tmpval)
+        if(tmpval(ll)==plotbi(m))
+            bi = [bi; tmpstr(ll)];
+        end
+    end
+    %bi = [bi; tmpstr(plotbi(m))];
 end
 
 if(S_type == TRAN_)
@@ -69,7 +82,12 @@ if(S_type == TRAN_)
         %size(Res_nv)
         fip = fopen(resultfile, 'w');
         for i=1:size(printnv,1)
-            fprintf(fip, 'n%d = [\n', nodes(printnv(i)));
+            for ll=1:length(tmpval)
+                if(tmpval(ll)==printnv(i))
+                    fprintf(fip, '%% node: %s\n', char(tmpstr(ll)));
+                end
+            end            
+            fprintf(fip, 'n%d = [\n', i);
             for j=1:size(Res_nv,1)
                 fprintf(fip, '%6.4f;\n', Res_nv(j,i));
             end

@@ -31,6 +31,11 @@ ELEM = zeros(1,1);
 INFO = zeros(1,10);
 %NAMES = zeros(1,1);
 
+dictsize = 0;
+keyset = {'0'};
+valueset = [-1];
+nodedict = containers.Map(keyset, valueset);
+
 %ckt = 'a.txt';
 fip = fopen(ckt,'r');
 if(fip == -1)
@@ -72,12 +77,12 @@ while ~feof(fip)
                 
                 dname = upper(char(rrow(1)));
                 %upper(char(rrow(1)))
-                nname1 = str2num(char(rrow(2)));
-                nname2 = str2num(char(rrow(3)));
+                nname1 = (char(rrow(2)));
+                nname2 = (char(rrow(3)));
                 val = str2double(char(rrow(4)));
                 
-                [idx1,number_nunk, nodelist] = addnode(nname1, nodelist, number_nunk);
-                [idx2,number_nunk, nodelist] = addnode(nname2, nodelist, number_nunk);
+                [idx1,number_nunk, nodedict] = addnode(nname1, nodedict, number_nunk);
+                [idx2,number_nunk, nodedict] = addnode(nname2, nodedict, number_nunk);
                 
                 A=[];
                 A(TYPE_) = abs(dname(1));
@@ -101,12 +106,12 @@ while ~feof(fip)
                 end
                 
                 dname = upper(char(rrow(1)));
-                nname1 = str2num(char(rrow(2)));
-                nname2 = str2num(char(rrow(3)));
+                nname1 = (char(rrow(2)));
+                nname2 = (char(rrow(3)));
                 val = str2double(char(rrow(4)));
                 
-                [idx1,number_nunk, nodelist] = addnode(nname1, nodelist, number_nunk);
-                [idx2,number_nunk, nodelist] = addnode(nname2, nodelist, number_nunk);
+                [idx1,number_nunk, nodedict] = addnode(nname1, nodedict, number_nunk);
+                [idx2,number_nunk, nodedict] = addnode(nname2, nodedict, number_nunk);
                 
                 A=[];
                 A(TYPE_) = abs(dname(1));
@@ -130,12 +135,12 @@ while ~feof(fip)
                 end
                 
                 dname = upper(char(rrow(1)));
-                nname1 = str2num(char(rrow(2)));
-                nname2 = str2num(char(rrow(3)));
+                nname1 = (char(rrow(2)));
+                nname2 = (char(rrow(3)));
                 val = str2double(char(rrow(4)));
                 
-                [idx1,number_nunk, nodelist] = addnode(nname1, nodelist, number_nunk);
-                [idx2,number_nunk, nodelist] = addnode(nname2, nodelist, number_nunk);
+                [idx1,number_nunk, nodedict] = addnode(nname1, nodedict, number_nunk);
+                [idx2,number_nunk, nodedict] = addnode(nname2, nodedict, number_nunk);
                 
                 A=[];
                 A(TYPE_) = abs(dname(1));
@@ -160,8 +165,8 @@ while ~feof(fip)
                 end
                 
                 dname = upper(char(rrow(1)));
-                nname1 = str2num(char(rrow(2)));
-                nname2 = str2num(char(rrow(3)));
+                nname1 = (char(rrow(2)));
+                nname2 = (char(rrow(3)));
                 
                 vtype=[];vvtype=[];
                 if(max(size(rrow))>4)
@@ -170,8 +175,8 @@ while ~feof(fip)
                 end
                 %val = str2double(char(rrow(5)));
                 
-                [idx1,number_nunk, nodelist] = addnode(nname1, nodelist, number_nunk);
-                [idx2,number_nunk, nodelist] = addnode(nname2, nodelist, number_nunk);
+                [idx1,number_nunk, nodedict] = addnode(nname1, nodedict, number_nunk);
+                [idx2,number_nunk, nodedict] = addnode(nname2, nodedict, number_nunk);
                 
                 A=[];
                 A(TYPE_) = abs(dname(1));
@@ -280,17 +285,17 @@ while ~feof(fip)
                 end
                 
                 dname = upper(char(rrow(1)));
-                nname1 = str2num(char(rrow(2)));
-                nname2 = str2num(char(rrow(3)));
-                nname3 = str2num(char(rrow(4)));
+                nname1 = (char(rrow(2)));
+                nname2 = (char(rrow(3)));
+                nname3 = (char(rrow(4)));
                 mtype = upper(char(rrow(5)));
                 ch_w = str2double(char(rrow(6)));
                 ch_l = str2double(char(rrow(7)));
                 midx = str2double(char(rrow(8)));
                 
-                [idx1,number_nunk, nodelist] = addnode(nname1, nodelist, number_nunk);
-                [idx2,number_nunk, nodelist] = addnode(nname2, nodelist, number_nunk);
-                [idx3,number_nunk, nodelist] = addnode(nname3, nodelist, number_nunk);
+                [idx1,number_nunk, nodedict] = addnode(nname1, nodedict, number_nunk);
+                [idx2,number_nunk, nodedict] = addnode(nname2, nodedict, number_nunk);
+                [idx3,number_nunk, nodedict] = addnode(nname3, nodedict, number_nunk);
                 
                 A=[];
                 A(TYPE_) = abs(dname(1));
@@ -324,8 +329,8 @@ while ~feof(fip)
                 end
                 
                 dname = upper(char(rrow(1)));
-                nname1 = str2num(char(rrow(2)));
-                nname2 = str2num(char(rrow(3)));
+                nname1 = (char(rrow(2)));
+                nname2 = (char(rrow(3)));
                 
                 itype=[];iitype=[];
                 if(max(size(rrow))>4)
@@ -334,8 +339,8 @@ while ~feof(fip)
                 end
                 %val = str2double(char(rrow(5)));
                 
-                [idx1,number_nunk, nodelist] = addnode(nname1, nodelist, number_nunk);
-                [idx2,number_nunk, nodelist] = addnode(nname2, nodelist, number_nunk);
+                [idx1,number_nunk, nodedict] = addnode(nname1, nodedict, number_nunk);
+                [idx2,number_nunk, nodedict] = addnode(nname2, nodedict, number_nunk);
                 
                 A=[];
                 A(TYPE_) = abs(dname(1));
@@ -475,8 +480,8 @@ while ~feof(fip)
                         if(strcmp(ptype(3),'R')) %print
                             if(strcmp(ptype(7:8),'NV'))
                                 prnv = prnv+1;
-                                nname = str2num(char(rrow(2)));
-                                [parse_ok, node_idx, number_nunk, nodelist] = findnode(nname,nodelist,number_nunk,1,parse_ok);
+                                nname = (char(rrow(2)));
+                                [parse_ok, node_idx, nodedict] = findnode(nname,nodedict,parse_ok);
                                 if(parse_ok==0)
                                     continue
                                 end
@@ -494,8 +499,8 @@ while ~feof(fip)
                             if(strcmp(ptype(6:7),'NV'))
                                 %disp('plotnv')
                                 plnv = plnv+1;
-                                nname = str2num(char(rrow(2)));
-                                [parse_ok, node_idx, number_nunk, nodelist] = findnode(nname,nodelist,number_nunk,1,parse_ok);
+                                nname = (char(rrow(2)));
+                                [parse_ok, node_idx, nodedict] = findnode(nname,nodedict,parse_ok);
                                 if(parse_ok==0)
                                     continue
                                 end
@@ -668,7 +673,7 @@ end
 if(parse_ok == 1)
     kk = zeros(size(ELEM,1),3);
     ELEM = [ELEM,kk];
-    NODES = nodelist;
+    NODES = nodedict;
     
     % flip some vectors
     INFO = INFO';
@@ -690,7 +695,7 @@ end
 %% end of function loadckt
 
 
-function [nodeidx, number_nunk, nodelist] = addnode(nname, nodelist, number_nunk)
+function [nodeidx, number_nunk, nodedict] = addnode(nname, nodedict, number_nunk)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 
 %% addnode: add node to table
@@ -704,36 +709,16 @@ function [nodeidx, number_nunk, nodelist] = addnode(nname, nodelist, number_nunk
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 nflag=0;
 
-if(number_nunk == 0 && nname ~= 0)
+if(~isKey(nodedict, nname))
     number_nunk = number_nunk + 1;
-    nodelist(number_nunk) = nname;
-    nodeidx = number_nunk;
-elseif(number_nunk ~= 0 && nname ~= 0)
-    for i=1:number_nunk
-        if(nname == nodelist(i))
-            nflag = nflag+1;
-            nodeidx = i;
-        end
-    end
-    
-    if(nflag > 1)
-        fprintf(' Duplicated nodes already stored in nodelist\n');
-    elseif(nflag == 0)
-        if(nname ~= 0)
-            number_nunk = number_nunk + 1;
-            nodelist(number_nunk) = nname;
-            nodeidx = number_nunk;
-        else
-            nodeidx = -1;
-        end
-    end
-else
-    nodeidx = -1;
+    nodedict(nname) = number_nunk;
 end
+nodeidx = nodedict(nname);
+
 end
 %% end of function addnode
 
-function [parse_ok,nodeidx, number_nunk, nodelist] = findnode(nname, nodelist, number_nunk, option, parse_ok)
+function [parse_ok,nodeidx,nodedict] = findnode(nname, nodedict, parse_ok)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 
 %% findnode: find node index from table
@@ -755,20 +740,10 @@ if(parse_ok == 0)
     return
 end
 
-for i=1:number_nunk
-    if(nname == nodelist(i))
-        nodeidx = i;
-        nflag = 1;
-        break;
-    end
-end
-
-if(nflag == 0 && option==0)
-    number_nunk = number_nunk + 1;
-    nodelist(number_nunk) = nname;
-    nodeidx = number_nunk;
-elseif(nflag == 0 && option==1)
-    fprintf(' Error: can not find node (%d) in option\n', nname);
+if(isKey(nodedict, nname))
+	nodeidx = nodedict(nname);
+else
+    fprintf(' Error: can not find node (%s) in option\n', nname);
     parse_ok = 0;
 end
 
