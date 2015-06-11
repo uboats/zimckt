@@ -258,7 +258,8 @@ while(~quitall)
                 fprintf(' The DC simulation result is\n');
                 tmpstr = keys(nodes);
                 for i=1:numNodes
-                    fprintf('  node idx %d: %f(V)\n', i, Res_dc(i));
+                    %fprintf('  node idx %d: %f(V)\n', i, Res_dc(i));
+                    fprintf('  node %d (%s): %f(V)\n', i, tmpstr(i), Res_dc(i));
                 end
                 fprintf('**************************************************\n');
                 fprintf(' Mission Accomplished!\n');
