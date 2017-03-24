@@ -166,6 +166,7 @@ while(~quitall)
     end
     
     numNodes = length(nodes)-1;% remove gnd
+    dim = numNodes;
     
     if(info(SIM_) ~= RD_)
         % time step for transient simulation
@@ -374,7 +375,7 @@ while(~quitall)
         S_type = RD_;
         
         if(info(METHOD_) == PRIMA_)
-            orders = 10;
+            orders = 3;
             exps = 0;
             port_ind1 = 1;
             port_ind2 = 1;
