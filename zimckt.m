@@ -166,6 +166,7 @@ while(~quitall)
     end
     
     numNodes = length(nodes)-1;% remove gnd
+    dim = numNodes;
     
     if(info(SIM_) ~= RD_)
         % time step for transient simulation

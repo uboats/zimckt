@@ -20,7 +20,7 @@ global G1_ C1_ B1_ GR_ CR_ BR_ L1_ LR_
 fprintf('**************************************************\n');
 fprintf('   MOR using PRIMA starts ...\n');
 
-numNodes = length(nodes);
+numNodes = length(nodes) - 1;%remove gnd
 t_rd = cputime;
 
 G1_ = [];
@@ -158,7 +158,7 @@ for j = 1: length(outport),
         if(plotf)
             hold on
             loglog(x_axis, abs(res_f(j,:)), 'r-.');
-            legend('Full Model', 'PRIMA');
+            legend('PRIMA', 'Full Model');
         else
             legend('PRIMA');
         end
@@ -370,10 +370,12 @@ for i = 1:numElm,
             if n1 >0,
                 B(n1, num_cols) = 1;
                 port_ind = [port_ind n1];
+                port_name =[port_name; names(i,:)];
             end
             if n2 > 0,
                 B(n2, num_cols) = -1;
                 port_ind = [port_ind n2];
+                port_name =[port_name; names(i,:)];
             end
             
         otherwise

@@ -1794,8 +1794,8 @@ r1275	770	21	2.387000e+00
 * port 21 - load 6.300000e-02
 
 *AC analysis
-.AC 100 1e7 1e9 
-
+*.AC 100 1e7 1e9 
+.RD PRIMA
 *report results
-.PLOTNV 769
-.PLOTNV 41
+*.PLOTNV 769
+*.PLOTNV 41
