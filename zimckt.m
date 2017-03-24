@@ -375,7 +375,7 @@ while(~quitall)
         S_type = RD_;
         
         if(info(METHOD_) == PRIMA_)
-            orders = 3;
+            orders = 10;
             exps = 0;
             port_ind1 = 1;
             port_ind2 = 1;
